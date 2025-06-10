@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'app',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,10 @@ DATABASES = {
     }
 }
 
+GRAPHENE = {
+    "SCHEMA": "project.schema.schema",
+}
+
 SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
@@ -75,3 +80,4 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = "app.CustomUser"
