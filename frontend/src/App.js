@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
 
 function App() {
+  const [message, setMessage] = useState("Loading....");
+
+  useEffect(() => {
+    const fetch_message = async () => {
+      try {
+        const data = await fetch("http://localhost:8000/api/hello/");
+        setMessage(data.message);
+      } catch (err) {
+        console.log("An error has occurred:", err);
+      }
+    };
+    fetch_message();
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: "6rem", fontFamily: "Arial", color: "black" }}>
+      <h1>{message}</h1>
+      <h1>{"This is an error"}</h1>
     </div>
   );
 }

@@ -24,6 +24,7 @@ services:
     build: ./frontend
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     stdin_open: True
     environment:
       - CHOKIDAR_USEPOLLING=true
