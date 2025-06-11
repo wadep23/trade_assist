@@ -1,14 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthServiceProvider } from "../services/AuthServiceProvider";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e, email, password) => {
     e.preventDefault();
     // TODO: Replace with actual auth API call
+    const authService = new AuthServiceProvider("localhost:8000/api/graphql/");
+
+    try {
+      await authService.login(email, password);
+      const user = await authService.me();
+      console.log("Logged in as:", user.username);
+    } catch (err) {
+      console.error(err.message);
+    }
     // navigate("/dashboard");
     console.log("Login pressed!");
   };
@@ -47,13 +57,15 @@ const Login = () => {
         >
           Login
         </button>
-        <button
-          type="register"
-          onClick={handleRegister}
-          className="w-full bg-blue-600 text-white py-2 my-1 rounded hover:bg-blue-700 transition duration-200"
-        >
-          Register
-        </button>
+        <div className="flex content-center justify-center">
+          <h1
+            type="register"
+            onClick={handleRegister}
+            className="text-blue-600 cursor-pointer py-2 my-1 rounded hover:text-green-600 transition duration-200"
+          >
+            Register
+          </h1>
+        </div>
       </form>
     </div>
   );

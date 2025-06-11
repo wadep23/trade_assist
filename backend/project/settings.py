@@ -4,8 +4,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-local-secret-key')
-DEBUG = 'True'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(",")
+DEBUG = True
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 ROOT_URLCONF = 'project.urls'
 WSGI_APPLICATION = 'project.wsgi.application'
 
@@ -48,12 +48,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+] 
 
 if DEBUG:
     CORS_ORIGIN_ALLOW_ALL = os.getenv('CORS_ORIGIN_ALLOW_ALL', "True") == 'True'
 else:
     CORS_ORIGIN_ALLOW_ALL = False
+    # TODO: Add allowed origins to env for production
     CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 
 DATABASES = {
@@ -69,9 +70,19 @@ DATABASES = {
 
 GRAPHENE = {
     "SCHEMA": "project.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
 }
 
-SECURE_SSL_REDIRECT = not DEBUG
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+CORS_ALLOWED_CREDENTIALS = True
+
+SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 X_FRAME_OPTIONS = 'DENY'

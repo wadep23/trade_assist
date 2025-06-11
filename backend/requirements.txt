@@ -4,3 +4,4 @@ psycopg2-binary
 gunicorn
 django-cors-headers
 graphene-django
+django-graphql-jwt

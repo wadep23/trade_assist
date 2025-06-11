@@ -22,12 +22,12 @@ class RegisterUser(graphene.Mutation):
         username = graphene.String(required=True)
         email = graphene.String(required=True)
         password = graphene.String(required=True)
-        address_1 = graphene.String()
-        address_2 = graphene.String()
-        city = graphene.String()
-        state = graphene.String()
-        postal_code = graphene.String()
-        country = graphene.String()
+        # address_1 = graphene.String()
+        # address_2 = graphene.String()
+        # city = graphene.String()
+        # state = graphene.String()
+        # postal_code = graphene.String()
+        # country = graphene.String()
 
     user = graphene.Field(UserType)
 
@@ -40,12 +40,12 @@ class RegisterUser(graphene.Mutation):
         user = CustomUser(
             username=username,
             email=email,
-            address_1=kwargs.get("address_1", ""),
-            address_2=kwargs.get("address_2", ""),
-            city=kwargs.get("city", ""),
-            state=kwargs.get("state", ""),
-            postal_code=kwargs.get("postal_code", ""),
-            country=kwargs.get("country", ""),
+            # address_1=kwargs.get("address_1", ""),
+            # address_2=kwargs.get("address_2", ""),
+            # city=kwargs.get("city", ""),
+            # state=kwargs.get("state", ""),
+            # postal_code=kwargs.get("postal_code", ""),
+            # country=kwargs.get("country", ""),
         )
         user.set_password(password)
         user.save()
@@ -81,3 +81,4 @@ class Mutation(graphene.ObjectType):
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
 
+schema = graphene.Schema(query=Query, mutation=Mutation)

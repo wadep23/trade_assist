@@ -56,13 +56,14 @@ const Register = () => {
         >
           Register
         </button>
-        <button
-          type="login"
-          onClick={handleLogin}
-          className="w-full bg-blue-600 text-white py-2 my-1 rounded hover:bg-blue-700 transition duration-200"
-        >
-          Login
-        </button>
+        <div className="flex content-center justify-center">
+          <h2
+            className="text-blue-600 cursor-pointer py-2 my-1 hover:text-green-600 transition duration-200"
+            onClick={handleLogin}
+          >
+            Already registered? Login
+          </h2>
+        </div>
       </form>
     </div>
   );
