@@ -5,18 +5,26 @@ from django.views.decorators.csrf import csrf_exempt
 from .views import hello_world, login_view, logout_view
 from .schema import schema
 
-COOKIE_NAME = 'accessToken'
+COOKIE_NAME = "accessToken"
+
 
 class CustomGraphQLView(GraphQLView):
     def parse_body(self, request):
         token = request.COOKIES.get(COOKIE_NAME)
         if token:
-            request.META['HTTP_AUTHORIZATION'] = f'JWT {token}'
+            request.META["HTTP_AUTHORIZATION"] = f"JWT {token}"
         return super().parse_body(request)
 
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        return response
+
+
 urlpatterns = [
-    path("graphql/", csrf_exempt(CustomGraphQLView.as_view(schema=schema, graphiql=True))),
+    path(
+        "graphql/", csrf_exempt(CustomGraphQLView.as_view(schema=schema, graphiql=True))
+    ),
     path("login/", csrf_exempt(login_view)),
     path("logout/", csrf_exempt(logout_view)),
-    path('hello/', csrf_exempt(hello_world)),
+    path("hello/", csrf_exempt(hello_world)),
 ]

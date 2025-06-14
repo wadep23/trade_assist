@@ -1,11 +1,31 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const REGISTER_MUTATION = `
+    mutation RegisterUser($username: String!, $email: String!, $password: String!) {
+        registerUser(username: $username, email: $email, password: $password) {
+            token
+            user {
+                id
+                username
+                email
+            }
+        }
+    }
+`;
+
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -15,8 +35,25 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    // TODO: Replace with actual auth API call
-    // navigate("/dashboard");
+    const response = await fetch("/api/graphql/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        query: REGISTER_MUTATION,
+        variables: formData,
+      }),
+    });
+    
+    const result = await response.json();
+
+    if (result.errors) {
+      setError(result.errors[0].message);
+    } else {
+      navigate("/dashboard");
+    }
     console.log("Register Pressed!");
   };
 
@@ -27,27 +64,31 @@ const Register = () => {
         className="bg-white p-8 rounded-xl shadow-md w-full max-w-sm"
       >
         <h2 className="text-2xl font-bold mb-6 text-center">
-          Login to Trade Assist
+          Register
         </h2>
+        {error && <p className="text-red-500 mb-2">{error}</p>}
         <input
           type="username"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
           className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
           className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
           className="w-full px-4 py-2 mb-6 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <button
