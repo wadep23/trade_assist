@@ -10,7 +10,7 @@ const Login = () => {
   const handleLogin = async (e, email, password) => {
     e.preventDefault();
     // TODO: Replace with actual auth API call
-    const authService = new AuthServiceProvider("localhost:8000/api/graphql/");
+    const authService = new AuthServiceProvider("/api/graphql/");
 
     try {
       await authService.login(email, password);
@@ -19,7 +19,7 @@ const Login = () => {
     } catch (err) {
       console.error(err.message);
     }
-    // navigate("/dashboard");
+    navigate("/dashboard");
     console.log("Login pressed!");
   };
 
@@ -38,8 +38,8 @@ const Login = () => {
           Login to Trade Assist
         </h2>
         <input
-          type="email"
-          placeholder="Email"
+          type="text"
+          placeholder="Email or Username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full px-4 py-2 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"

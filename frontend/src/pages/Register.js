@@ -1,18 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const REGISTER_MUTATION = `
-    mutation RegisterUser($username: String!, $email: String!, $password: String!) {
-        registerUser(username: $username, email: $email, password: $password) {
-            token
-            user {
-                id
-                username
-                email
-            }
-        }
-    }
-`;
+import { AuthServiceProvider } from "../services/AuthServiceProvider";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -35,24 +23,13 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const response = await fetch("/api/graphql/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        query: REGISTER_MUTATION,
-        variables: formData,
-      }),
-    });
-    
-    const result = await response.json();
+    const authService = new AuthServiceProvider("/api/graphql/")
 
-    if (result.errors) {
-      setError(result.errors[0].message);
-    } else {
+    try {
+      await authService.register(formData);
       navigate("/dashboard");
+    } catch (error) {
+      setError(error.message);
     }
     console.log("Register Pressed!");
   };

@@ -5,9 +5,47 @@ export class AuthServiceProvider {
     this.apiUrl = apiUrl;
   }
 
+  async register({ username, email, password }) {
+    const query = `
+    mutation RegisterUser($username: String!, $email: String!, $password: String!) {
+        registerUser(username: $username, email: $email, password: $password) {
+            token
+            user {
+                id
+                username
+                email
+            }
+        }
+    }
+`;
+
+    const variables = { username, email, password };
+
+    const response = await fetch("/api/graphql/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        query: query,
+        variables: variables,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.data?.registerUser) {
+      return result.data.registerUser
+    }
+
+    const errorMessage = result.errors?.[0]?.message || "Registration failed. Please try again";
+    throw new Error(errorMessage)
+  }
+
   async login(username, password) {
     const query = `
-      mutation Login($username: String!, $password: String!) {
+      mutation Login($username: String, $password: String) {
         tokenAuth(username: $username, password: $password) {
           success
         }
@@ -41,7 +79,7 @@ export class AuthServiceProvider {
   async logout() {
     const query = `
       mutation {
-        revokeToken {
+        logout {
           success
         }
       }
@@ -58,7 +96,7 @@ export class AuthServiceProvider {
 
     const result = await response.json();
 
-    if (response.ok && result.data?.revokeToken?.success) {
+    if (response.ok && result.data?.logout?.success) {
       return { success: true };
     }
 
